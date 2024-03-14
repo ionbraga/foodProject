@@ -160,12 +160,13 @@ window.addEventListener('DOMContentLoaded', function() {
     // Class for Cards
 
     class MenuCard {  //cream clasul
-        constructor(src, alt, title, descr, price, parentSelector) {  //cream constructorul iar ca argumente dam compenentele cardurilor
+        constructor(src, alt, title, descr, price, parentSelector, ...classes) {  //cream constructorul iar ca argumente dam compenentele cardurilor
             this.src = src;  //scriem argumentele ca valori
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.price = price;
+            this.classes = classes;  //rest operator
             this.parent = document.querySelector(parentSelector);  //DOM element 
             this.transfer = 27;  //curs valuta static ca exemplu
             this.changeToUAH();  //aici vom chema metoda changeToUAH
@@ -177,16 +178,23 @@ window.addEventListener('DOMContentLoaded', function() {
 
         render() {  //cream aspectul siteului (верстка)
             const element = document.createElement('div');  //cream un div nou iar mai jos ii atribuim o structura noua de elemente 
+
+            if (this.classes.length === 0) {  //daca nu a fost dat niciun argument classes
+                this.element = 'menu__item'; 
+                element.classList.add(this.element)  //atunci adaugam valoarea default
+            } else {
+                this.classes.forEach(className => element.classList.add(className));  //verificam pseudomasivul format si adaugam clasele din pseudomasiv direct pe element
+            }
+
+
             element.innerHTML = `  
-                <div class="menu__item">
-                    <img src=${this.src} alt=${this.alt}>  
-                    <h3 class="menu__item-subtitle">${this.title}</h3>
-                    <div class="menu__item-descr">${this.descr}</div>
-                    <div class="menu__item-divider"></div>
-                    <div class="menu__item-price">
-                        <div class="menu__item-cost">Цена:</div>
-                        <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
-                    </div>
+                <img src=${this.src} alt=${this.alt}>  
+                <h3 class="menu__item-subtitle">${this.title}</h3>
+                <div class="menu__item-descr">${this.descr}</div>
+                <div class="menu__item-divider"></div>
+                <div class="menu__item-price">
+                    <div class="menu__item-cost">Цена:</div>
+                    <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
                 </div>
             `;
             this.parent.append(element);  //punem DOM elementul in noul div 
@@ -199,7 +207,8 @@ window.addEventListener('DOMContentLoaded', function() {
         "Меню 'Фитнес'",
         "Меню 'Фитнес' - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!",
         9,
-        '.menu .container'  //cream parentul DOM element
+        '.menu .container',
+        "menu__item" //cream parentul DOM element
     ).render();  //cream un obiect si deodata chemam metoda render, dupa asta el va disparea pentru ca nu l-am pus intr-o variabila
 
     new MenuCard(
@@ -208,7 +217,8 @@ window.addEventListener('DOMContentLoaded', function() {
         "Меню 'Премиум'",
         "В меню 'Премиум' мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
         14,
-        '.menu .container'  //cream parentul DOM element
+        '.menu .container',
+        "menu__item"  //cream parentul DOM element
     ).render();  //cream un obiect si deodata chemam metoda render, dupa asta el va disparea pentru ca nu l-am pus intr-o variabila
 
     new MenuCard(
@@ -217,7 +227,8 @@ window.addEventListener('DOMContentLoaded', function() {
         "Меню 'Постное'",
         "Меню 'Постное' - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
         21,
-        '.menu .container'  //cream parentul DOM element
+        '.menu .container',
+        "menu__item"  //cream parentul DOM element
     ).render();  //cream un obiect si deodata chemam metoda render, dupa asta el va disparea pentru ca nu l-am pus intr-o variabila
 
 
