@@ -42,7 +42,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // TIMER
 
-    const deadline = '2024-03-17';
+    const deadline = '2024-06-17';
 
     function getTimeRemaining(endtime) {
         let days, hours, minutes, seconds;
@@ -231,7 +231,59 @@ window.addEventListener('DOMContentLoaded', function() {
         "menu__item"  //cream parentul DOM element
     ).render();  //cream un obiect si deodata chemam metoda render, dupa asta el va disparea pentru ca nu l-am pus intr-o variabila
 
+    
+    // Forms. Folosim XMLHttpRequest
+    
+    const forms = document.querySelectorAll('form');  //In variabila forms primim formele din html
 
+    const message = {  //Cream un obiect cu raspunsuri diferite in caz de diferite response status
+        loading: 'Incarcare',
+        success: 'Multumim! Va contactam in curand',
+        failure: 'Ceva nu merge bine...'
+    };
+
+    forms.forEach(item => {  //Legam de fiecare forma functia postData
+        postData(item);
+    });
+
+    function postData(form) {  //Cream functia ce raspunde pentru postarea datelor, va primi in sine o forma  
+        form.addEventListener('submit', (e) => {  //De fiecare data cand trimitem ceva date in forma  (e este obiectul evemnimentului)
+            e.preventDefault();  //Pentru a anula comportamentul standart al browserului
+
+            const statusMessage = document.createElement('div');  //Vom crea elementul div statusMessage
+            statusMessage.classList.add('status');  //Ii adaugam classul status 
+            statusMessage.textContent = message.loading;  //Vom arata utilizatorului deodata mesajul incarcare
+            form.appendChild(statusMessage);  //Trimitem mesajul catre forma 
+
+            const request = new XMLHttpRequest();  //Cream obiectul XMLHttpRequest
+            request.open('POST', 'server.php');  //Se cheama metodul open pentru a seta cererea(zaprosul)
+
+            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');  //Setam titlurire pentru formData
+            const formData = new FormData(form);  //Cream obiectul formData care si transmitem ca argument forma care se transmite ca argument in postData
+            
+            const object = {};  //cream un obiect gol
+            formData.forEach(function(value, key){  //folosim forEach pentru a sorta tot ce este inauntru formData si le va pune in object
+                object[key] = value;
+            });
+
+            const json = JSON.stringify(object);  //Folosim JSON.stringify care transforma un obiect simplu in format JSON
+
+            request.send(json);  //Trimitem obiectul formData creat pe baza obiectului new FormData
+            
+            request.addEventListener('load', () => {  //Urmarim incarcarea finala cererii noastre 
+                if(request.status === 200) {  //Daca response status este egal cu 200 
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;  //trimitem mesajul success in forma
+                    form.reset();  //resetam forma
+                    setTimeout(() => {  //cream un setTimeout
+                        statusMessage.remove();  //eliminam blocul status message de pe pagina
+                    }, 2000);  //dupa doua sec
+                } else {
+                    statusMessage.textContent = message.failure;  //daca ceva nu a mers bine transmitem failure
+                }
+            });
+        });
+    }
 }); 
 
 
