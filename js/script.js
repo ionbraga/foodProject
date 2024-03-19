@@ -107,8 +107,7 @@ window.addEventListener('DOMContentLoaded', function() {
     //MODAL
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),  //primim buttoanele de aratare a ferestrei modal
-          modal = document.querySelector('.modal'),  //primim fereastra modal
-          modalCloseBtn = document.querySelector('[data-close]');  //primim buttonul de inchidere a ferestrei modal
+          modal = document.querySelector('.modal');  //primim fereastra modal
 
 
     function openModal() {
@@ -129,11 +128,9 @@ window.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', openModal);
     });
 
-    modalCloseBtn.addEventListener('click', closeModal); //trimitem functia closeModal dupa click
-
 
     modal.addEventListener('click', (e) => {  //evenimentul click pe modal si folosim obiectul evenimentului - "e"
-        if(e.target === modal) {  //daca locul unde tasteaza utilizatorul este egal cu modal, adica nu pe modal-dialog
+        if(e.target === modal || e.target.getAttribute('data-close') == '') {  //daca locul unde tasteaza utilizatorul este egal cu modal, adica nu pe modal-dialog
            closeModal();  //chemam functia closeModal
         }
     });
@@ -145,7 +142,7 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    const modalTimerId = setTimeout(openModal, 5000);  //setam intervalul de timp dupa care sa apara fereastra modal
+    const modalTimerId = setTimeout(openModal, 10000);  //setam intervalul de timp dupa care sa apara fereastra modal
 
     function showModalByScroll() {  //cream functia ce va arata fereastra modal dupa ce ajungem la sfarsitul paginii
         if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {  //daca distanța de la partea de sus a viewport-ului până la partea de jos a viewport-ului este egala cu înălțimea totală a întregului document
@@ -237,7 +234,7 @@ window.addEventListener('DOMContentLoaded', function() {
     const forms = document.querySelectorAll('form');  //In variabila forms primim formele din html
 
     const message = {  //Cream un obiect cu raspunsuri diferite in caz de diferite response status
-        loading: 'Incarcare',
+        loading: 'img/form/spinner.svg',
         success: 'Multumim! Va contactam in curand',
         failure: 'Ceva nu merge bine...'
     };
@@ -250,10 +247,13 @@ window.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', (e) => {  //De fiecare data cand trimitem ceva date in forma  (e este obiectul evemnimentului)
             e.preventDefault();  //Pentru a anula comportamentul standart al browserului
 
-            const statusMessage = document.createElement('div');  //Vom crea elementul div statusMessage
-            statusMessage.classList.add('status');  //Ii adaugam classul status 
-            statusMessage.textContent = message.loading;  //Vom arata utilizatorului deodata mesajul incarcare
-            form.appendChild(statusMessage);  //Trimitem mesajul catre forma 
+            const statusMessage = document.createElement('img');  //Vom crea elementul img statusMessage
+            statusMessage.src = message.loading;  //Ii adaugam atributul src 
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;  //Am adaugat stiluri la status message
+            form.insertAdjacentElement('afterend', statusMessage); //folosim o comanda care va pune dupa forma status message
 
             const request = new XMLHttpRequest();  //Cream obiectul XMLHttpRequest
             request.open('POST', 'server.php');  //Se cheama metodul open pentru a seta cererea(zaprosul)
@@ -273,16 +273,38 @@ window.addEventListener('DOMContentLoaded', function() {
             request.addEventListener('load', () => {  //Urmarim incarcarea finala cererii noastre 
                 if(request.status === 200) {  //Daca response status este egal cu 200 
                     console.log(request.response);
-                    statusMessage.textContent = message.success;  //trimitem mesajul success in forma
+                    showThanksModal(message.success);  //chemam functia ShowThanksModal si trimitem mesajul success in forma
                     form.reset();  //resetam forma
-                    setTimeout(() => {  //cream un setTimeout
-                        statusMessage.remove();  //eliminam blocul status message de pe pagina
-                    }, 2000);  //dupa doua sec
+                    statusMessage.remove();  //eliminam blocul status message de pe pagina
                 } else {
-                    statusMessage.textContent = message.failure;  //daca ceva nu a mers bine transmitem failure
+                    showThanksModal(message.failure);  //daca ceva nu a mers bine transmitem failure prin functia showThanksModal
                 }
             });
         });
+    }
+
+    function showThanksModal(message) {  //Cream functia ce va raspunde de aratarea unu mesaj de multumire
+        const prevModalDialog = document.querySelector('.modal__dialog');  //Primim clasul modal__dialog
+
+        prevModalDialog.classList.add('hide');  //Ii adaugam clasul hide care il va ascunde de pe pag
+        openModal();  //Cand se ascunde prevModalDialog se porneste functia openModal
+
+        const thanksModal = document.createElement('div');  //Cream un element div si il punem in variabila thanksModal
+        thanksModal.classList.add('modal__dialog');  //Ii adaugam clasul modal__dialog
+        thanksModal.innerHTML = `  
+            <div class="modal__content">
+                <div class="modal__close" data-close>×</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;  //Adaugam content in blocul pe care l-am creat
+        
+        document.querySelector('.modal').append(thanksModal);  //Primim fereastra modal si folosim append care adauga textul 
+        setTimeout(() => {  //Cream un setTimeout care va functiona dupa 4 sec
+            thanksModal.remove();  //ascundem thanksModal pentru a intoarce inapoi prevModalDialog
+            prevModalDialog.classList.add('show');  //aratam
+            prevModalDialog.classList.remove('hide');  //ascundem
+            closeModal();  //inchidem fereastra modal
+        }, 4000);
     }
 }); 
 
