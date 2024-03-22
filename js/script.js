@@ -255,31 +255,50 @@ window.addEventListener('DOMContentLoaded', function() {
             `;  //Am adaugat stiluri la status message
             form.insertAdjacentElement('afterend', statusMessage); //folosim o comanda care va pune dupa forma status message
 
-            const request = new XMLHttpRequest();  //Cream obiectul XMLHttpRequest
-            request.open('POST', 'server.php');  //Se cheama metodul open pentru a seta cererea(zaprosul)
+            // const request = new XMLHttpRequest();  //Cream obiectul XMLHttpRequest
+            // request.open('POST', 'server.php');  //Se cheama metodul open pentru a seta cererea(zaprosul)
 
-            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');  //Setam titlurire pentru formData
             const formData = new FormData(form);  //Cream obiectul formData care si transmitem ca argument forma care se transmite ca argument in postData
-            
+
             const object = {};  //cream un obiect gol
             formData.forEach(function(value, key){  //folosim forEach pentru a sorta tot ce este inauntru formData si le va pune in object
                 object[key] = value;
             });
 
-            const json = JSON.stringify(object);  //Folosim JSON.stringify care transforma un obiect simplu in format JSON
+            // const json = JSON.stringify(object);  //Folosim JSON.stringify care transforma un obiect simplu in format JSON
 
-            request.send(json);  //Trimitem obiectul formData creat pe baza obiectului new FormData
-            
-            request.addEventListener('load', () => {  //Urmarim incarcarea finala cererii noastre 
-                if(request.status === 200) {  //Daca response status este egal cu 200 
-                    console.log(request.response);
-                    showThanksModal(message.success);  //chemam functia ShowThanksModal si trimitem mesajul success in forma
-                    form.reset();  //resetam forma
-                    statusMessage.remove();  //eliminam blocul status message de pe pagina
-                } else {
-                    showThanksModal(message.failure);  //daca ceva nu a mers bine transmitem failure prin functia showThanksModal
-                }
+            fetch('server.php', {  //Cream Fetch si deschidem obiectul si indicam unde
+                method: "POST",  //Indicam metoda
+                headers: {  //Indicam titlurile
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)  //Indicam corpul pe care il vom trimite
+            })
+            .then(data => data.text())
+            .then(data => {  //Folosim promisurile
+                console.log(data); //Aratam la consola ceea ce ne returneaza serverul
+                showThanksModal(message.success);  //chemam functia ShowThanksModal si trimitem mesajul success in forma
+                statusMessage.remove();  //eliminam blocul status message de pe pagina
+            }).catch(() => {
+                showThanksModal(message.failure);  //daca ceva nu a mers bine transmitem failure prin functia showThanksModal
+            }).finally(() => {
+                form.reset();
             });
+
+            // request.setRequestHeader('Content-type', 'application/json; charset=utf-8');  //Setam titlurire pentru formData
+            
+            
+            // request.send(json);  //Trimitem obiectul formData creat pe baza obiectului new FormData
+            // request.addEventListener('load', () => {  //Urmarim incarcarea finala cererii noastre 
+            //     if(request.status === 200) {  //Daca response status este egal cu 200 
+            //         console.log(request.response);
+            //         showThanksModal(message.success);  //chemam functia ShowThanksModal si trimitem mesajul success in forma
+            //         form.reset();  //resetam forma
+            //         statusMessage.remove();  //eliminam blocul status message de pe pagina
+            //     } else {
+            //         showThanksModal(message.failure);  //daca ceva nu a mers bine transmitem failure prin functia showThanksModal
+            //     }
+            // });
         });
     }
 
