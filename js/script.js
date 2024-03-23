@@ -198,38 +198,25 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    new MenuCard(
-        "img/tabs/vegy.jpg",
-        "vegy",
-        "Меню 'Фитнес'",
-        "Меню 'Фитнес' - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!",
-        9,
-        '.menu .container',
-        "menu__item" //cream parentul DOM element
-    ).render();  //cream un obiect si deodata chemam metoda render, dupa asta el va disparea pentru ca nu l-am pus intr-o variabila
 
-    new MenuCard(
-        "img/tabs/elite.jpg",
-        "elite",
-        "Меню 'Премиум'",
-        "В меню 'Премиум' мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!",
-        14,
-        '.menu .container',
-        "menu__item"  //cream parentul DOM element
-    ).render();  //cream un obiect si deodata chemam metoda render, dupa asta el va disparea pentru ca nu l-am pus intr-o variabila
+    const getResource = async (url, data) => {  //(async)codul asincron din functie va fi transformat in sincron
+        const res = await fetch(url);  //In res punem promisul ce vine de la fetch
 
-    new MenuCard(
-        "img/tabs/post.jpg",
-        "post",
-        "Меню 'Постное'",
-        "Меню 'Постное' - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.",
-        21,
-        '.menu .container',
-        "menu__item"  //cream parentul DOM element
-    ).render();  //cream un obiect si deodata chemam metoda render, dupa asta el va disparea pentru ca nu l-am pus intr-o variabila
+        if (!res.ok) {  //daca res nu este ok
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);  //Aruncam o noua eroare
+        }
 
+        return await res.json();  //transforma raspunsul in json
+    };
+
+    getResource('http://localhost:3000/menu') 
+        .then(data => {  //datele vin de pe server
+            data.forEach(({img, altimg, title, descr, price}) => {
+                new MenuCard(img, altimg, title, descr, price, '.menu .container').render();  //acest metod se va repeta de atatea ori cate obiecte vor fi in masiv
+            });
+        }); 
     
-    // Forms. Folosim XMLHttpRequest
+    // Forms
     
     const forms = document.querySelectorAll('form');  //In variabila forms primim formele din html
 
@@ -240,10 +227,21 @@ window.addEventListener('DOMContentLoaded', function() {
     };
 
     forms.forEach(item => {  //Legam de fiecare forma functia postData
-        postData(item);
+        bindOostData(item);
     });
 
-    function postData(form) {  //Cream functia ce raspunde pentru postarea datelor, va primi in sine o forma  
+    const postData = async (url, data) => {  //(async)codul asincron din functie va fi transformat in sincron
+        const res = await fetch(url, {  //(avait), se foloseste cu async, js intelege ca codul ce urmeaza va fi sincron
+            method: "POST",  //Indicam metoda
+            headers: {  //Indicam titlurile
+                'Content-type': 'application/json'
+            },
+            body: data
+        });  //In res punem promisul ce vine de la fetch
+        return await res.json();  //transforma raspunsul in json
+    };
+
+    function bindOostData(form) {  //Cream functia ce raspunde pentru postarea datelor, va primi in sine o forma  
         form.addEventListener('submit', (e) => {  //De fiecare data cand trimitem ceva date in forma  (e este obiectul evemnimentului)
             e.preventDefault();  //Pentru a anula comportamentul standart al browserului
 
@@ -255,26 +253,14 @@ window.addEventListener('DOMContentLoaded', function() {
             `;  //Am adaugat stiluri la status message
             form.insertAdjacentElement('afterend', statusMessage); //folosim o comanda care va pune dupa forma status message
 
-            // const request = new XMLHttpRequest();  //Cream obiectul XMLHttpRequest
-            // request.open('POST', 'server.php');  //Se cheama metodul open pentru a seta cererea(zaprosul)
-
             const formData = new FormData(form);  //Cream obiectul formData care si transmitem ca argument forma care se transmite ca argument in postData
 
-            const object = {};  //cream un obiect gol
-            formData.forEach(function(value, key){  //folosim forEach pentru a sorta tot ce este inauntru formData si le va pune in object
-                object[key] = value;
-            });
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));  //transformă obiectul formData într-un șir JSON pentru a-l putea utiliza ulterior pentru a trimite date către server sau pentru a fi stocat în altă parte sub formă de date JSON.
 
-            // const json = JSON.stringify(object);  //Folosim JSON.stringify care transforma un obiect simplu in format JSON
 
-            fetch('server.php', {  //Cream Fetch si deschidem obiectul si indicam unde
-                method: "POST",  //Indicam metoda
-                headers: {  //Indicam titlurile
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(object)  //Indicam corpul pe care il vom trimite
-            })
-            .then(data => data.text())
+
+
+            postData('http://localhost:3000/requests', json)
             .then(data => {  //Folosim promisurile
                 console.log(data); //Aratam la consola ceea ce ne returneaza serverul
                 showThanksModal(message.success);  //chemam functia ShowThanksModal si trimitem mesajul success in forma
@@ -284,21 +270,6 @@ window.addEventListener('DOMContentLoaded', function() {
             }).finally(() => {
                 form.reset();
             });
-
-            // request.setRequestHeader('Content-type', 'application/json; charset=utf-8');  //Setam titlurire pentru formData
-            
-            
-            // request.send(json);  //Trimitem obiectul formData creat pe baza obiectului new FormData
-            // request.addEventListener('load', () => {  //Urmarim incarcarea finala cererii noastre 
-            //     if(request.status === 200) {  //Daca response status este egal cu 200 
-            //         console.log(request.response);
-            //         showThanksModal(message.success);  //chemam functia ShowThanksModal si trimitem mesajul success in forma
-            //         form.reset();  //resetam forma
-            //         statusMessage.remove();  //eliminam blocul status message de pe pagina
-            //     } else {
-            //         showThanksModal(message.failure);  //daca ceva nu a mers bine transmitem failure prin functia showThanksModal
-            //     }
-            // });
         });
     }
 
