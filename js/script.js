@@ -325,6 +325,11 @@ window.addEventListener('DOMContentLoaded', function() {
             closeModal();  //inchidem fereastra modal
         }, 4000);
     }
+
+    fetch('http://localhost:3000/menu')  //facem o cerere HTTP GET către fișierul db.json
+        .then(data => data.json())  //preluam și parsam corpul răspunsului ca un obiect JavaScript folosind metoda json()
+        .then(res => console.log(res));  //obiectul JSON parsat este afișat în consolă, res reprezintă rezultatul parsării JSON-ului
+
 }); 
 
 
