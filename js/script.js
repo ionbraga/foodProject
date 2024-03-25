@@ -311,47 +311,74 @@ window.addEventListener('DOMContentLoaded', function() {
           prev = document.querySelector('.offer__slider-prev'),  //primim arrow prev apoi next
           next = document.querySelector('.offer__slider-next'),
           total = document.querySelector('#total'),
-          current = document.querySelector('#current');
+          current = document.querySelector('#current'),
+          slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+          slidesField = document.querySelector('.offer__slider-inner'),
+          width = window.getComputedStyle(slidesWrapper).width;  //returnează valoarea calculată pentru proprietatea width a elementului slidesWrapper
+    
     let slideIndex = 1;  //index ce va arata pozitia actuala a sliderului
+    let offset = 0;  //orientir sa vedem cu cat sa mutam cu ajutorul transform
 
-    showSlides(slideIndex);  //punem in functia showSlide variabila slideIndex ce contine indexul initial
-
+    
     if(slides.length < 10) {  //daca avem mai putin de 10 slideuri adaugam un 0 in fata
         total.textContent = `0${slides.length}`;
+        current.textContent = `0${slideIndex}`;
     } else {
         total.textContent = slides.length;  //daca nu, adaugam numarul actual al sliderului
+        current.textContent = slideIndex;
     }
 
-    function showSlides(n) {  //functie care arata sliderele ce primeste ca argument slideIndex;
-        if(n > slides.length) {  
-            slideIndex = 1;
-        }
+    slidesField.style.width = 100 * slides.length + '%';  //setam latimea blocului
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
+ 
+    slidesWrapper.style.overflow = 'hidden';  //ascundem toate elementele ce nu apar in zona de vizibilitate
 
-        if(n < 1) {
-            slideIndex = slides.length;
-        }
-
-        slides.forEach(item => item.style.display = 'none');  //ascundem toate sliderurile 
-        slides[slideIndex - 1].style.display = 'block';  //afisam sliderul actual si scadem 1 ca sa aratam pozitia corespunzatoara
-
-        if(slides.length < 10) {  //daca avem mai putin de 10 slideuri adaugam un 0 in fata
-            current.textContent = `0${slideIndex}`;
-        } else {
-            current.textContent = slideIndex;  //daca nu, adaugam numarul actual al sliderului
-        }
-
-    };
-
-    function plusSlides(n) {  //cream functia care va chema functia showSlides
-        showSlides(slideIndex += n);   
-    };
-
-    prev.addEventListener('click', () => {  //eveniment pe buttonul prev
-        plusSlides(-1);
+    slides.forEach(slide => {
+        slide.style.width = width;  //cu forEach trecem prin toate sliderurile si le setam aceeasi latime la toate
     });
 
-    next.addEventListener('click', () => {  //eveniment pe buttonul next
-        plusSlides(+1);
-    })
+    next.addEventListener('click', () => {
+        if(offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {  //intai avem un string, apoi il convertim in number si ii taiem px
+            offset = 0;
+        } else {
+            offset += +width.slice(0, width.length - 2);  //
+        }
 
+        slidesField.style.transform = `translateX(-${offset}px)`;  //mutam pe x slideul cat ne spune offsetul
+
+        if(slideIndex == slides.length) {
+            slideIndex = 1;
+        } else {
+            slideIndex++;
+        }
+
+        if(slides.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        } else { 
+            current.textContent = slideIndex;
+        }
+    });
+
+    prev.addEventListener('click', () => {
+        if(offset == 0) {  //intai avem un string, apoi il convertim in number si ii taiem px
+            offset = +width.slice(0, width.length - 2) * (slides.length - 1) //intai avem un string, apoi il convertim in number si ii taiem px
+        } else {
+            offset -= +width.slice(0, width.length - 2);  //
+        }
+
+        slidesField.style.transform = `translateX(-${offset}px)`;  //mutam pe x slideul cat ne spune offsetul
+
+        if(slideIndex == 1) {
+            slideIndex = slides.length;
+        } else {
+            slideIndex--;
+        }
+
+        if(slides.length < 10) {
+            current.textContent = `0${slideIndex}`;
+        } else { 
+            current.textContent = slideIndex;
+        }
+    });
 }); 
