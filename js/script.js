@@ -209,13 +209,21 @@ window.addEventListener('DOMContentLoaded', function() {
         return await res.json();  //transforma raspunsul in json
     };
 
-    getResource('http://localhost:3000/menu') 
-        .then(data => {  //datele vin de pe server
-            data.forEach(({img, altimg, title, descr, price}) => {
+    // getResource('http://localhost:3000/menu') 
+    //     .then(data => {  //datele vin de pe server
+    //         data.forEach(({img, altimg, title, descr, price}) => {
+    //             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();  //acest metod se va repeta de atatea ori cate obiecte vor fi in masiv
+    //         });
+    //     }); 
+    
+    axios.get('http://localhost:3000/menu') 
+        .then(data => {
+            data.data.forEach(({img, altimg, title, descr, price}) => {
                 new MenuCard(img, altimg, title, descr, price, '.menu .container').render();  //acest metod se va repeta de atatea ori cate obiecte vor fi in masiv
             });
-        }); 
-    
+        });
+
+
     // Forms
     
     const forms = document.querySelectorAll('form');  //In variabila forms primim formele din html
@@ -297,11 +305,8 @@ window.addEventListener('DOMContentLoaded', function() {
         }, 4000);
     }
 
-    fetch('http://localhost:3000/menu')  //facem o cerere HTTP GET către fișierul db.json
-        .then(data => data.json())  //preluam și parsam corpul răspunsului ca un obiect JavaScript folosind metoda json()
-        .then(res => console.log(res));  //obiectul JSON parsat este afișat în consolă, res reprezintă rezultatul parsării JSON-ului
+    // fetch('http://localhost:3000/menu')  //facem o cerere HTTP GET către fișierul db.json
+    //     .then(data => data.json())  //preluam și parsam corpul răspunsului ca un obiect JavaScript folosind metoda json()
+    //     .then(res => console.log(res));  //obiectul JSON parsat este afișat în consolă, res reprezintă rezultatul parsării JSON-ului
 
 }); 
-
-
-
