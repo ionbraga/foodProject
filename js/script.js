@@ -305,8 +305,53 @@ window.addEventListener('DOMContentLoaded', function() {
         }, 4000);
     }
 
-    // fetch('http://localhost:3000/menu')  //facem o cerere HTTP GET către fișierul db.json
-    //     .then(data => data.json())  //preluam și parsam corpul răspunsului ca un obiect JavaScript folosind metoda json()
-    //     .then(res => console.log(res));  //obiectul JSON parsat este afișat în consolă, res reprezintă rezultatul parsării JSON-ului
+    //Slider
+
+    const slides = document.querySelectorAll('.offer__slide'),  //primim sliderurile
+          prev = document.querySelector('.offer__slider-prev'),  //primim arrow prev apoi next
+          next = document.querySelector('.offer__slider-next'),
+          total = document.querySelector('#total'),
+          current = document.querySelector('#current');
+    let slideIndex = 1;  //index ce va arata pozitia actuala a sliderului
+
+    showSlides(slideIndex);  //punem in functia showSlide variabila slideIndex ce contine indexul initial
+
+    if(slides.length < 10) {  //daca avem mai putin de 10 slideuri adaugam un 0 in fata
+        total.textContent = `0${slides.length}`;
+    } else {
+        total.textContent = slides.length;  //daca nu, adaugam numarul actual al sliderului
+    }
+
+    function showSlides(n) {  //functie care arata sliderele ce primeste ca argument slideIndex;
+        if(n > slides.length) {  
+            slideIndex = 1;
+        }
+
+        if(n < 1) {
+            slideIndex = slides.length;
+        }
+
+        slides.forEach(item => item.style.display = 'none');  //ascundem toate sliderurile 
+        slides[slideIndex - 1].style.display = 'block';  //afisam sliderul actual si scadem 1 ca sa aratam pozitia corespunzatoara
+
+        if(slides.length < 10) {  //daca avem mai putin de 10 slideuri adaugam un 0 in fata
+            current.textContent = `0${slideIndex}`;
+        } else {
+            current.textContent = slideIndex;  //daca nu, adaugam numarul actual al sliderului
+        }
+
+    };
+
+    function plusSlides(n) {  //cream functia care va chema functia showSlides
+        showSlides(slideIndex += n);   
+    };
+
+    prev.addEventListener('click', () => {  //eveniment pe buttonul prev
+        plusSlides(-1);
+    });
+
+    next.addEventListener('click', () => {  //eveniment pe buttonul next
+        plusSlides(+1);
+    })
 
 }); 
