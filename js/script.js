@@ -383,11 +383,15 @@ window.addEventListener('DOMContentLoaded', function() {
         dots.push(dot);  //cand se creaza punctele le bagam in arr
     };
 
+    function deleteNotDigits(str) {
+        return+str.replace(/\D/g, '');
+    }
+
     next.addEventListener('click', () => {
-        if(offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {  //intai avem un string, apoi il convertim in number si ii taiem px
+        if(offset == deleteNotDigits(width) * (slides.length - 1)) {  //intai avem un string, apoi il convertim in number si ii taiem px
             offset = 0;
         } else {
-            offset += +width.slice(0, width.length - 2);  //
+            offset += deleteNotDigits(width);  //
         }
 
         slidesField.style.transform = `translateX(-${offset}px)`;  //mutam pe x slideul cat ne spune offsetul
@@ -410,9 +414,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
     prev.addEventListener('click', () => {
         if(offset == 0) {  //intai avem un string, apoi il convertim in number si ii taiem px
-            offset = +width.slice(0, width.length - 2) * (slides.length - 1) //intai avem un string, apoi il convertim in number si ii taiem px
+            offset = deleteNotDigits(width) * (slides.length - 1) //intai avem un string, apoi il convertim in number si ii taiem px
         } else {
-            offset -= +width.slice(0, width.length - 2);  //
+            offset -= deleteNotDigits(width);  //
         }
 
         slidesField.style.transform = `translateX(-${offset}px)`;  //mutam pe x slideul cat ne spune offsetul
@@ -438,7 +442,7 @@ window.addEventListener('DOMContentLoaded', function() {
             const slideTo = e.target.getAttribute('data-slide-to');  //primim valoarea obiectului e dupa click
 
             slideIndex = slideTo;  //cand tastam un punct schimbam indexul la slideIndex
-            offset = +width.slice(0, width.length - 2) * (slideTo - 1);  //calculam offsetul
+            offset = deleteNotDigits(width) * (slideTo - 1);  //calculam offsetul
 
             slidesField.style.transform = `translateX(-${offset}px)`;  //mutam pe x slideul cat ne spune offsetul
             dots.forEach(dot => dot.style.opacity = '.5');  //initial fiecarui punct ii dam inline style opacity 0.5
