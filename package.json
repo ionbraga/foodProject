@@ -16,7 +16,8 @@
   },
   "homepage": "https://github.com/ionbraga/foodProject#readme",
   "devDependencies": {
-    "json-server": "^1.0.0-alpha.23"
+    "json-server": "^1.0.0-alpha.23",
+    "webpack-cli": "^5.1.4"
   },
   "description": ""
 }
