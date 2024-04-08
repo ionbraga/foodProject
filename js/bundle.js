@@ -1,12 +1,17 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./js/modules/calc.js":
 /*!****************************!*\
   !*** ./js/modules/calc.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 function calc() {
     //Calculator
 
@@ -123,7 +128,7 @@ function calc() {
     getDynamicInformation('#age');
 }
 
-module.exports = calc;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (calc);
 
 /***/ }),
 
@@ -131,7 +136,14 @@ module.exports = calc;
 /*!*****************************!*\
   !*** ./js/modules/cards.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./js/services/services.js");
+
 
 function cards() {
     
@@ -180,17 +192,7 @@ function cards() {
     }
 
 
-    const getResource = async (url, data) => {  //(async)codul asincron din functie va fi transformat in sincron
-        const res = await fetch(url);  //In res punem promisul ce vine de la fetch
-
-        if (!res.ok) {  //daca res nu este ok
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);  //Aruncam o noua eroare
-        }
-
-        return await res.json();  //transforma raspunsul in json
-    };
-
-    getResource('http://localhost:3000/menu') 
+    (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.getResource)('http://localhost:3000/menu') 
         .then(data => {  //datele vin de pe server
             data.forEach(({img, altimg, title, descr, price}) => {
                 new MenuCard(img, altimg, title, descr, price, '.menu .container').render();  //acest metod se va repeta de atatea ori cate obiecte vor fi in masiv
@@ -206,7 +208,7 @@ function cards() {
 
 }
 
-module.exports = cards;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (cards);
 
 /***/ }),
 
@@ -214,12 +216,21 @@ module.exports = cards;
 /*!*****************************!*\
   !*** ./js/modules/forms.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function forms() {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_services__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/services */ "./js/services/services.js");
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modal */ "./js/modules/modal.js");
+
+
+
+function forms(formSelector, modalTimerId) {
     // Forms
     
-    const forms = document.querySelectorAll('form');  //In variabila forms primim formele din html
+    const forms = document.querySelectorAll(formSelector);  //In variabila forms primim formele din html
 
     const message = {  //Cream un obiect cu raspunsuri diferite in caz de diferite response status
         loading: 'img/form/spinner.svg',
@@ -231,16 +242,7 @@ function forms() {
         bindOostData(item);
     });
 
-    const postData = async (url, data) => {  //(async)codul asincron din functie va fi transformat in sincron
-        const res = await fetch(url, {  //(avait), se foloseste cu async, js intelege ca codul ce urmeaza va fi sincron
-            method: "POST",  //Indicam metoda
-            headers: {  //Indicam titlurile
-                'Content-type': 'application/json'
-            },
-            body: data
-        });  //In res punem promisul ce vine de la fetch
-        return await res.json();  //transforma raspunsul in json
-    };
+
 
     function bindOostData(form) {  //Cream functia ce raspunde pentru postarea datelor, va primi in sine o forma  
         form.addEventListener('submit', (e) => {  //De fiecare data cand trimitem ceva date in forma  (e este obiectul evemnimentului)
@@ -259,9 +261,7 @@ function forms() {
             const json = JSON.stringify(Object.fromEntries(formData.entries()));  //transformă obiectul formData într-un șir JSON pentru a-l putea utiliza ulterior pentru a trimite date către server sau pentru a fi stocat în altă parte sub formă de date JSON.
 
 
-
-
-            postData('http://localhost:3000/requests', json)
+            (0,_services_services__WEBPACK_IMPORTED_MODULE_0__.postData)('http://localhost:3000/requests', json)
             .then(data => {  //Folosim promisurile
                 console.log(data); //Aratam la consola ceea ce ne returneaza serverul
                 showThanksModal(message.success);  //chemam functia ShowThanksModal si trimitem mesajul success in forma
@@ -278,7 +278,7 @@ function forms() {
         const prevModalDialog = document.querySelector('.modal__dialog');  //Primim clasul modal__dialog
 
         prevModalDialog.classList.add('hide');  //Ii adaugam clasul hide care il va ascunde de pe pag
-        openModal();  //Cand se ascunde prevModalDialog se porneste functia openModal
+        (0,_modal__WEBPACK_IMPORTED_MODULE_1__.openModal)('.modal', modalTimerId);  //Cand se ascunde prevModalDialog se porneste functia openModal
 
         const thanksModal = document.createElement('div');  //Cream un element div si il punem in variabila thanksModal
         thanksModal.classList.add('modal__dialog');  //Ii adaugam clasul modal__dialog
@@ -294,12 +294,12 @@ function forms() {
             thanksModal.remove();  //ascundem thanksModal pentru a intoarce inapoi prevModalDialog
             prevModalDialog.classList.add('show');  //aratam
             prevModalDialog.classList.remove('hide');  //ascundem
-            closeModal();  //inchidem fereastra modal
+            (0,_modal__WEBPACK_IMPORTED_MODULE_1__.closeModal)('.modal');  //inchidem fereastra modal
         }, 4000);
     }
 }
 
-module.exports = forms;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (forms);
 
 /***/ }),
 
@@ -307,52 +307,60 @@ module.exports = forms;
 /*!*****************************!*\
   !*** ./js/modules/modal.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function modal() {
-        //MODAL
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   closeModal: () => (/* binding */ closeModal),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   openModal: () => (/* binding */ openModal)
+/* harmony export */ });
 
-        const modalTrigger = document.querySelectorAll('[data-modal]'),  //primim buttoanele de aratare a ferestrei modal
-        modal = document.querySelector('.modal');  //primim fereastra modal
+function openModal(modalSelector, modalTimerId) {  //cand functia se cheama ea va lucra cu selectorul 
+    const modal = document.querySelector(modalSelector);  //primim fereastra modal
+    modal.classList.add('show');  //se adauga show la fereastra modal 
+    modal.classList.remove('hide');  //se scoade hide 
+    document.body.style.overflow = 'hidden';  //nu putem face scroll
+    console.log(modalTimerId);
+    if(modalTimerId) {
+        clearInterval(modalTimerId);  //daca utilizatorul a privit singur deja fereastra modal atunci anulam pornirea automata
+    }
+    
+}
+
+function closeModal(modalSelector) {
+    const modal = document.querySelector(modalSelector);  //primim fereastra modal
+    modal.classList.add('hide');  //se adauga hide la fereastra modal 
+    modal.classList.remove('show');  //se scoade show
+    document.body.style.overflow = ''; //pornim inapoi scrollul
+}
 
 
-  function openModal() {
-      modal.classList.add('show');  //se adauga show la fereastra modal 
-      modal.classList.remove('hide');  //se scoade hide 
-      document.body.style.overflow = 'hidden';  //nu putem face scroll
-      clearInterval(modalTimerId);  //daca utilizatorul a privit singur deja fereastra modal atunci anulam pornirea automata
-  }
-
-  function closeModal() {
-      modal.classList.add('hide');  //se adauga hide la fereastra modal 
-      modal.classList.remove('show');  //se scoade show
-      document.body.style.overflow = ''; //pornim inapoi scrollul
-  }
+function modal(triggerSelector, modalSelector, modalTimerId) {
+        const modalTrigger = document.querySelectorAll(triggerSelector),  //primim buttoanele de aratare a ferestrei modal
+        modal = document.querySelector(modalSelector);  //primim fereastra modal
 
 
   modalTrigger.forEach(btn => {  //pentru a lucra cu pseudomasivul modalTrigger
-      btn.addEventListener('click', openModal);
+      btn.addEventListener('click', () => openModal(modalSelector, modalTimerId));
   });
 
 
   modal.addEventListener('click', (e) => {  //evenimentul click pe modal si folosim obiectul evenimentului - "e"
       if(e.target === modal || e.target.getAttribute('data-close') == '') {  //daca locul unde tasteaza utilizatorul este egal cu modal, adica nu pe modal-dialog
-         closeModal();  //chemam functia closeModal
+         closeModal(modalSelector);  //chemam functia closeModal
       }
   });
 
   document.addEventListener('keydown', (e) => {  //tastarea de la tastatura
       if(e.code === 'Escape' && modal.classList.contains('show')) {  //daca e(obiectul evenimentului) este egala cu tasta escape(daca noi am tastat esc) si daca fereastra modal este desschisa
-          closeModal();  //chemam functia closeModal
+          closeModal(modalSelector);  //chemam functia closeModal
       }
   });
 
-
-  const modalTimerId = setTimeout(openModal, 10000);  //setam intervalul de timp dupa care sa apara fereastra modal
-
   function showModalByScroll() {  //cream functia ce va arata fereastra modal dupa ce ajungem la sfarsitul paginii
       if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {  //daca distanța de la partea de sus a viewport-ului până la partea de jos a viewport-ului este egala cu înălțimea totală a întregului document
-          openModal(); 
+          openModal(modalSelector, modalTimerId); 
           window.removeEventListener('scroll', showModalByScroll);  //dupa ce a fost deschisa prima data fereastra modal, se sterge eventListenerul ce a deschis fereastra
       }
   }
@@ -360,8 +368,9 @@ function modal() {
   window.addEventListener('scroll', showModalByScroll);  //adaugam eveniment odata ce am ajut la sfarsit de pag
 
 }
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (modal);
 
-module.exports = modal;
+
 
 /***/ }),
 
@@ -369,19 +378,23 @@ module.exports = modal;
 /*!******************************!*\
   !*** ./js/modules/slider.js ***!
   \******************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function slider() {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function slider({container, slide, nextArrow, prevArrow, totalCounter, currentCounter, wrapper, field}) {
         //Slider
 
-        const slides = document.querySelectorAll('.offer__slide'),  //primim sliderurile
-        slider = document.querySelector('.offer__slider'),
-        prev = document.querySelector('.offer__slider-prev'),  //primim arrow prev apoi next
-        next = document.querySelector('.offer__slider-next'),
-        total = document.querySelector('#total'),
-        current = document.querySelector('#current'),
-        slidesWrapper = document.querySelector('.offer__slider-wrapper'),
-        slidesField = document.querySelector('.offer__slider-inner'),
+        const slides = document.querySelectorAll(slide),  //primim sliderurile
+        slider = document.querySelector(container),
+        prev = document.querySelector(prevArrow),  //primim arrow prev apoi next
+        next = document.querySelector(nextArrow),
+        total = document.querySelector(totalCounter),
+        current = document.querySelector(currentCounter),
+        slidesWrapper = document.querySelector(wrapper),
+        slidesField = document.querySelector(field),
         width = window.getComputedStyle(slidesWrapper).width;  //returnează valoarea calculată pentru proprietatea width a elementului slidesWrapper
   
   let slideIndex = 1;  //index ce va arata pozitia actuala a sliderului
@@ -524,7 +537,7 @@ function slider() {
   });
 }
 
-module.exports = slider;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (slider);
 
 /***/ }),
 
@@ -532,14 +545,18 @@ module.exports = slider;
 /*!****************************!*\
   !*** ./js/modules/tabs.js ***!
   \****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function tabs() {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function tabs(tabsSelector, tabsContentSelector,tabsParentSelector, activeClass) {
         // TABS
     
-	let tabs = document.querySelectorAll('.tabheader__item'),
-    tabsContent = document.querySelectorAll('.tabcontent'),
-    tabsParent = document.querySelector('.tabheader__items');
+	let tabs = document.querySelectorAll(tabsSelector),
+    tabsContent = document.querySelectorAll(tabsContentSelector),
+    tabsParent = document.querySelector(tabsParentSelector);
 
     function hideTabContent() { 
     
@@ -549,14 +566,14 @@ function tabs() {
     });
 
     tabs.forEach(item => {
-        item.classList.remove('tabheader__item_active');
+        item.classList.remove(activeClass);
     });
     }
 
     function showTabContent(i = 0) {  
         tabsContent[i].classList.add('show', 'fade');
         tabsContent[i].classList.remove('hide');
-        tabs[i].classList.add('tabheader__item_active');
+        tabs[i].classList.add(activeClass);
     }
 
     hideTabContent();
@@ -564,7 +581,7 @@ function tabs() {
 
     tabsParent.addEventListener('click', function(event) { 
         const target = event.target;
-        if(target && target.classList.contains('tabheader__item')) {
+        if(target && target.classList.contains(tabsSelector.slice(1))) {
             tabs.forEach((item, i) => {
                 if (target == item) {
                     hideTabContent();
@@ -575,7 +592,7 @@ function tabs() {
     });
 }
 
-module.exports = tabs; 
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (tabs); 
 
 /***/ }),
 
@@ -583,12 +600,14 @@ module.exports = tabs;
 /*!*****************************!*\
   !*** ./js/modules/timer.js ***!
   \*****************************/
-/***/ ((module) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-function timer() {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function timer(id, deadline) {
     // TIMER
-
-    const deadline = '2024-06-17';
 
     function getTimeRemaining(endtime) {
         let days, hours, minutes, seconds;
@@ -647,10 +666,50 @@ function timer() {
         }
     };
 
-    setClock('.timer',deadline);
+    setClock(id, deadline);
 }
 
-module.exports = timer;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (timer);
+
+/***/ }),
+
+/***/ "./js/services/services.js":
+/*!*********************************!*\
+  !*** ./js/services/services.js ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getResource: () => (/* binding */ getResource),
+/* harmony export */   postData: () => (/* binding */ postData)
+/* harmony export */ });
+const postData = async (url, data) => {  //(async)codul asincron din functie va fi transformat in sincron
+    const res = await fetch(url, {  //(avait), se foloseste cu async, js intelege ca codul ce urmeaza va fi sincron
+        method: "POST",  //Indicam metoda
+        headers: {  //Indicam titlurile
+            'Content-type': 'application/json'
+        },
+        body: data
+    });  //In res punem promisul ce vine de la fetch
+    return await res.json();  //transforma raspunsul in json
+};
+
+async function getResource(url) {  //(async)codul asincron din functie va fi transformat in sincron
+    let res = await fetch(url);  //In res punem promisul ce vine de la fetch
+
+    if (!res.ok) {  //daca res nu este ok
+        throw new Error(`Could not fetch ${url}, status: ${res.status}`);  //Aruncam o noua eroare
+    }
+
+    return await res.json();  //transforma raspunsul in json
+};
+
+
+
+
+
+
 
 /***/ })
 
@@ -681,29 +740,79 @@ module.exports = timer;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 /*!**********************!*\
   !*** ./js/script.js ***!
   \**********************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js");
+/* harmony import */ var _modules_cards__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/cards */ "./js/modules/cards.js");
+/* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js");
+/* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js");
+/* harmony import */ var _modules_slider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js");
+/* harmony import */ var _modules_calc__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/calc */ "./js/modules/calc.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
+    
+    
+    
+    
+    
+    
+    
+    
+
 window.addEventListener('DOMContentLoaded', () => {
 
-    const tabs = __webpack_require__(/*! ./modules/tabs */ "./js/modules/tabs.js"),
-          cards = __webpack_require__(/*! ./modules/cards */ "./js/modules/cards.js"),
-          forms = __webpack_require__(/*! ./modules/forms */ "./js/modules/forms.js"),
-          modal = __webpack_require__(/*! ./modules/modal */ "./js/modules/modal.js"),
-          slider = __webpack_require__(/*! ./modules/slider */ "./js/modules/slider.js"),
-          calc = __webpack_require__(/*! ./modules/calc */ "./js/modules/calc.js"),
-          timer = __webpack_require__(/*! ./modules/timer */ "./js/modules/timer.js");
+    const modalTimerId = setTimeout(() => (0,_modules_modal__WEBPACK_IMPORTED_MODULE_3__.openModal)('.modal', modalTimerId), 300000);  //setam intervalul de timp dupa care sa apara fereastra modal
 
-    tabs();
-    calc();
-    cards();
-    forms();
-    modal();
-    slider();
-    timer();
+    (0,_modules_tabs__WEBPACK_IMPORTED_MODULE_0__["default"])('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+    (0,_modules_calc__WEBPACK_IMPORTED_MODULE_5__["default"])();
+    (0,_modules_cards__WEBPACK_IMPORTED_MODULE_1__["default"])();
+    (0,_modules_forms__WEBPACK_IMPORTED_MODULE_2__["default"])('form', modalTimerId);
+    (0,_modules_modal__WEBPACK_IMPORTED_MODULE_3__["default"])('[data-modal]', '.modal', modalTimerId);
+    (0,_modules_slider__WEBPACK_IMPORTED_MODULE_4__["default"])({
+        container: '.offer__slider',
+        nextArrow: '.offer__slider-next',
+        prevArrow: '.offer__slider-prev',
+        slide: '.offer__slide', 
+        totalCounter: '#total',
+        currentCounter: '#current',
+        wrapper: '.offer__slider-wrapper',
+        field: '.offer__slider-inner',
+    });
+    (0,_modules_timer__WEBPACK_IMPORTED_MODULE_6__["default"])('.timer', '2024-09-19');
+
 }); 
 
 })();

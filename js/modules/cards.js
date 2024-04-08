@@ -1,3 +1,5 @@
+import { getResource } from "../services/services";
+
 function cards() {
     
     // Class for Cards
@@ -45,16 +47,6 @@ function cards() {
     }
 
 
-    const getResource = async (url, data) => {  //(async)codul asincron din functie va fi transformat in sincron
-        const res = await fetch(url);  //In res punem promisul ce vine de la fetch
-
-        if (!res.ok) {  //daca res nu este ok
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);  //Aruncam o noua eroare
-        }
-
-        return await res.json();  //transforma raspunsul in json
-    };
-
     getResource('http://localhost:3000/menu') 
         .then(data => {  //datele vin de pe server
             data.forEach(({img, altimg, title, descr, price}) => {
@@ -71,4 +63,4 @@ function cards() {
 
 }
 
-module.exports = cards;
+export default cards;

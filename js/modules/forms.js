@@ -1,7 +1,10 @@
-function forms() {
+import { postData } from "../services/services";
+import { closeModal, openModal} from "./modal";
+
+function forms(formSelector, modalTimerId) {
     // Forms
     
-    const forms = document.querySelectorAll('form');  //In variabila forms primim formele din html
+    const forms = document.querySelectorAll(formSelector);  //In variabila forms primim formele din html
 
     const message = {  //Cream un obiect cu raspunsuri diferite in caz de diferite response status
         loading: 'img/form/spinner.svg',
@@ -13,16 +16,7 @@ function forms() {
         bindOostData(item);
     });
 
-    const postData = async (url, data) => {  //(async)codul asincron din functie va fi transformat in sincron
-        const res = await fetch(url, {  //(avait), se foloseste cu async, js intelege ca codul ce urmeaza va fi sincron
-            method: "POST",  //Indicam metoda
-            headers: {  //Indicam titlurile
-                'Content-type': 'application/json'
-            },
-            body: data
-        });  //In res punem promisul ce vine de la fetch
-        return await res.json();  //transforma raspunsul in json
-    };
+
 
     function bindOostData(form) {  //Cream functia ce raspunde pentru postarea datelor, va primi in sine o forma  
         form.addEventListener('submit', (e) => {  //De fiecare data cand trimitem ceva date in forma  (e este obiectul evemnimentului)
@@ -39,8 +33,6 @@ function forms() {
             const formData = new FormData(form);  //Cream obiectul formData care si transmitem ca argument forma care se transmite ca argument in postData
 
             const json = JSON.stringify(Object.fromEntries(formData.entries()));  //transformă obiectul formData într-un șir JSON pentru a-l putea utiliza ulterior pentru a trimite date către server sau pentru a fi stocat în altă parte sub formă de date JSON.
-
-
 
 
             postData('http://localhost:3000/requests', json)
@@ -60,7 +52,7 @@ function forms() {
         const prevModalDialog = document.querySelector('.modal__dialog');  //Primim clasul modal__dialog
 
         prevModalDialog.classList.add('hide');  //Ii adaugam clasul hide care il va ascunde de pe pag
-        openModal();  //Cand se ascunde prevModalDialog se porneste functia openModal
+        openModal('.modal', modalTimerId);  //Cand se ascunde prevModalDialog se porneste functia openModal
 
         const thanksModal = document.createElement('div');  //Cream un element div si il punem in variabila thanksModal
         thanksModal.classList.add('modal__dialog');  //Ii adaugam clasul modal__dialog
@@ -76,9 +68,9 @@ function forms() {
             thanksModal.remove();  //ascundem thanksModal pentru a intoarce inapoi prevModalDialog
             prevModalDialog.classList.add('show');  //aratam
             prevModalDialog.classList.remove('hide');  //ascundem
-            closeModal();  //inchidem fereastra modal
+            closeModal('.modal');  //inchidem fereastra modal
         }, 4000);
     }
 }
 
-module.exports = forms;
+export default forms;
